@@ -1,49 +1,54 @@
 services:
-  web-app-php:
+  php-app:
     build:
       context: .
-    container_name: web-app-php-service
+      dockerfile: Dockerfile
+    container_name: ad-task-final-project-php-app
     ports:
-      - "8000:8000"
-    develop:
-      watch:
-        - path: .
-          target: /var/www/html
-          action: sync
-        - path: ./composer.json
-          action: rebuild
-        - path: ./composer.lock
-          action: rebuild
+      - "8081:80"
+    volumes:
+      - .:/var/www/html
     depends_on:
-      - mongodb
-
-  mongodb:
-    image: mongo:latest
-    container_name: web-app-php-mongodb
+      - postgres
+      - mongo
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootPassword
-      MONGO_INITDB_DATABASE: mydatabase
-    ports:
-      - "27111:27017"
-    volumes:
-      - web-app-php-mongodb:/data/db/mongodb
+      - APP_ENV=development
 
-  postgresql:
-    image: postgres:15
-    container_name: web-app-php-postgresql
-    restart: always
+  postgres:
+    image: postgres:14
+    container_name: ad-task-final-project-postgres
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydatabase
+      POSTGRES_DB: ad_task_db
+      POSTGRES_USER: poginisnopz   # This creates the user 'poginisnopz'
+      POSTGRES_PASSWORD: password123
     ports:
-      - "5112:5432"
+      - "5432:5432"
     volumes:
-      - web-app-php-postgresql:/data/db/postgresql
+      - pgdata:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:5
+    container_name: ad-task-final-project-mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=poginisnopz
+      - MONGO_INITDB_ROOT_PASSWORD=password123
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+  phpPgAdmin:
+    image: dockage/phppgadmin
+    container_name: ad-task-final-project-phpPgAdmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: postgres
+      PMA_USER: poginisnopz
+      PMA_PASSWORD: password123
+    depends_on:
+      - postgres
 
 volumes:
-  web-app-php-mongodb:
-    driver: local
-  web-app-php-postgresql:
-    driver: local
+  pgdata:
+  mongodata:

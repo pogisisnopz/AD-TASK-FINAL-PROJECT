@@ -1,0 +1,25 @@
+{
+  "name": "poginisnopz/ad-task-final-project",
+  "description": "PHP + Docker + PostgreSQL + MongoDB Project",
+  "type": "project",
+  "require": {
+    "vlucas/phpdotenv": "^5.5",
+    "mongodb/mongodb": "^2.1"
+  },
+  "authors": [
+    {
+      "name": "poginisnopz",
+      "email": "202310560@fit.edu.ph"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "scripts": {
+    "postgresql:reset": "php utils/dbResetPostgresql.util.php",
+    "postgresql:seed": "php utils/dbSeederPostgresql.util.php",
+    "postgresql:migrate": "php utils/dbMigratePostgresql.util.php"
+  }
+}
