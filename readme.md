@@ -8,7 +8,7 @@
   <!-- TODO: If you want to add logo or banner you can add it here -->
     <img src="./assets/img/itachi.jpg" alt="Itachi" width="130" height="100">
   </a>
-<!-- TODO: Change Title to the name of the title of your Project -->
+<!-- TODO: Itachiii -->
   <h3 align="center">Title</h3>
 </div>
 <!-- TODO: Make a short description -->

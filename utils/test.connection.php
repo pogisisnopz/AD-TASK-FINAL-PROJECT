@@ -3,7 +3,7 @@
 require_once dirname(__DIR__) . '/bootstrap.php';  // Ensure bootstrap is loaded
 require_once BASE_PATH . '/vendor/autoload.php';  // Autoload necessary classes
 
-// Load environment variables using Dotenv (make sure to install "vlucas/phpdotenv" via Composer)
+// Load environment variables using Dotenv
 $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH); 
 $dotenv->load();
 
@@ -42,4 +42,4 @@ try {
     // If connection fails, catch the exception and display the error message
     echo "Connection failed: " . $e->getMessage();
 }
-?>  
+?>

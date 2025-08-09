@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+// Database credentials
 $host = 'host.docker.internal';  
 $dbname = 'ad_task_db';  
 $username = 'poginisnopz';  
@@ -8,26 +9,24 @@ $password = 'password123';
 
 $pdo = null;
 
+function sanitizeInput($data) {
+    return htmlspecialchars(stripslashes(trim($data)));
+}
+
+function validateEmail($email) {
+    return filter_var($email, FILTER_VALIDATE_EMAIL);
+}
+
+function validatePassword($password) {
+    return strlen($password) >= 8;
+}
+
+// Connect to the PostgreSQL database
 try {
     $pdo = new PDO("pgsql:host=$host;port=5432;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
-}
-
-function validateEmail($email)
-{
-    return filter_var($email, FILTER_VALIDATE_EMAIL);
-}
-
-function validatePassword($password)
-{
-    return strlen($password) >= 8;
-}
-
-function sanitizeInput($data)
-{
-    return htmlspecialchars(stripslashes(trim($data)));
 }
 
 // Handle signup action
@@ -47,32 +46,14 @@ if (isset($_POST['action']) && $_POST['action'] == 'signup') {
 
     // Validate inputs
     $errors = [];
+    if (empty($first_name)) $errors[] = "First name is required";
+    if (empty($last_name)) $errors[] = "Last name is required";
+    if (empty($email) || !validateEmail($email)) $errors[] = "Valid email is required";
+    if (empty($password) || !validatePassword($password)) $errors[] = "Password must be at least 8 characters long";
+    if ($password !== $confirm_password) $errors[] = "Passwords do not match";
+    if (!$terms) $errors[] = "You must agree to the terms and conditions";
 
-    if (empty($first_name)) {
-        $errors[] = "First name is required";
-    }
-
-    if (empty($last_name)) {
-        $errors[] = "Last name is required";
-    }
-
-    if (empty($email) || !validateEmail($email)) {
-        $errors[] = "Valid email is required";
-    }
-
-    if (empty($password) || !validatePassword($password)) {
-        $errors[] = "Password must be at least 8 characters long";
-    }
-
-    if ($password !== $confirm_password) {
-        $errors[] = "Passwords do not match";
-    }
-
-    if (!$terms) {
-        $errors[] = "You must agree to the terms and conditions";
-    }
-
-    // Check if email already exists in the database
+    // Check if email already exists
     if (empty($errors)) {
         try {
             $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
@@ -85,7 +66,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'signup') {
         }
     }
 
-    // If validation fails, redirect back with error messages
+    // Redirect back if validation fails
     if (!empty($errors)) {
         $_SESSION['error_message'] = implode(". ", $errors);
         header("Location: ../pages/signup.php");
@@ -107,7 +88,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'signup') {
         header("Location: ../pages/signup.php");
         exit();
     }
-} 
+}
+
 // Handle login action
 elseif (isset($_POST['action']) && $_POST['action'] == 'login') {
     $email = sanitizeInput($_POST['email']);

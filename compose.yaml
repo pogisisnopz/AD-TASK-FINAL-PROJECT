@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   php-app:
     build:
@@ -5,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: ad-task-final-project-php-app
     ports:
-      - "8081:80"
+      - "8081:80"  # Exposes PHP app on port 8081
     volumes:
       - .:/var/www/html
     depends_on:
@@ -13,18 +15,22 @@ services:
       - mongo
     environment:
       - APP_ENV=development
+    networks:
+      - app_network
 
   postgres:
     image: postgres:14
     container_name: ad-task-final-project-postgres
     environment:
       POSTGRES_DB: ad_task_db
-      POSTGRES_USER: poginisnopz   # This creates the user 'poginisnopz'
-      POSTGRES_PASSWORD: password123
+      POSTGRES_USER: poginisnopz  # Correct user
+      POSTGRES_PASSWORD: password123  # Correct password
     ports:
-      - "5432:5432"
+      - "5432:5432"  # Exposes PostgreSQL on port 5432
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - app_network
 
   mongo:
     image: mongo:5
@@ -33,22 +39,30 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=poginisnopz
       - MONGO_INITDB_ROOT_PASSWORD=password123
     ports:
-      - "27017:27017"
+      - "27017:27017"  # Exposes MongoDB on port 27017
     volumes:
       - mongodata:/data/db
+    networks:
+      - app_network
 
   phpPgAdmin:
     image: dockage/phppgadmin
     container_name: ad-task-final-project-phpPgAdmin
     ports:
-      - "8080:80"
+      - "8080:80"  # Exposes phpPgAdmin on port 8080
     environment:
       PMA_HOST: postgres
       PMA_USER: poginisnopz
       PMA_PASSWORD: password123
     depends_on:
       - postgres
+    networks:
+      - app_network
 
 volumes:
   pgdata:
   mongodata:
+
+networks:
+  app_network:
+    driver: bridge  # Creates a bridge network for the containers

@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/envSetter.util.php';
 
-
 function login($emailOrId, $password) {
     global $databases;
 
