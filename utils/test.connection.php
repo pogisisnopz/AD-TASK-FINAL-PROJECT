@@ -42,4 +42,4 @@ try {
     // If connection fails, catch the exception and display the error message
     echo "Connection failed: " . $e->getMessage();
 }
-?>
+?>  
