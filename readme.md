@@ -6,7 +6,7 @@
 <div align="center">
   <a href="https://github.com/zyx-0314/">
   <!-- TODO: If you want to add logo or banner you can add it here -->
-    <img src="./assets/img/itachi.jpg" alt="Nyebe" width="130" height="100">
+    <img src="./assets/img/itachi.jpg" alt="Itachi" width="130" height="100">
   </a>
 <!-- TODO: Itachiii -->
   <h3 align="center">Title</h3>
